@@ -2,6 +2,7 @@ const Express = require("express");
 const App = Express();
 const bcrypt = require("bcrypt");
 const BodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
 const morgan = require("morgan");
 const PORT = 8080;
 const { Pool } = require("pg");
@@ -23,9 +24,11 @@ db.connect((error, client) => {
 App.use(morgan("dev"));
 App.use(BodyParser.urlencoded({ extended: false }));
 App.use(BodyParser.json());
+App.use(cookieParser());
 App.use(Express.static("public"));
 
 App.get("/api/data", (req, res) => {
+  console.log(req.cookies);
   db.query(
     `
     SELECT * 
