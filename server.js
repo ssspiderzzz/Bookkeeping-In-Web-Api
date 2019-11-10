@@ -30,6 +30,14 @@ App.use(Express.static("public"));
 App.get("/api/data", (req, res) => {
   console.log(req.cookies);
   db.query(
+    `SELECT id
+    FROM users WHERE email = $1
+    `,
+    [req.cookies.email]
+  ).then(id => {
+    console.log("login user id:" + json(id));
+  });
+  db.query(
     `
     SELECT * 
     FROM orders WHERE user_id = $1
