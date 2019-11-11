@@ -31,8 +31,8 @@ App.get("/api/userCheck", (req, res) => {
   if (req.cookies.email) {
     db.query(
       `SELECT id
-    FROM users WHERE email = $1
-    `,
+      FROM users WHERE email = $1
+      `,
       [req.cookies.email]
     ).then(id => {
       if (id.rows[0]) {
@@ -53,6 +53,8 @@ App.get("/api/userCheck", (req, res) => {
         });
       }
     });
+  } else {
+    res.json({});
   }
 });
 
