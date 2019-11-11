@@ -28,7 +28,6 @@ App.use(cookieParser());
 App.use(Express.static("public"));
 
 App.get("/api/userCheck", (req, res) => {
-  console.log(req.cookies);
   if (req.cookies.email) {
     db.query(
       `SELECT id
@@ -66,28 +65,28 @@ App.get("/api/data", (req, res) => {
     [req.cookies.email]
   )
     .then(userID => {
-      // const login_user_id = userID.rows.id;
-      const login_user_id = 1;
+      const login_user_id = userID.rows[0].id;
       db.query(
         `
         SELECT * FROM orders WHERE user_id = $1
         `,
         [login_user_id]
       ).then(data1 => {
-        console.log(data1.rows);
         let order_ids = [];
         data1.rows.map(order => {
           order_ids.push(order.id);
         });
-        console.log(order_ids);
-        db.query(
+        if (order_ids.length > 0) {
+          db.query(
+            `
+          SELECT * FROM items WHERE order_id IN (${order_ids})
           `
-          SELECT * FROM items WHERE order_id IN ($1, $2, $3)
-          `,
-          order_ids
-        ).then(data2 => {
-          res.json({ orders: data1, items: data2 });
-        });
+          ).then(data2 => {
+            res.json({ orders: data1, items: data2 });
+          });
+        } else {
+          res.json({ orders: [], items: [] });
+        }
       });
     })
     .catch(err => console.log(err));
@@ -95,6 +94,16 @@ App.get("/api/data", (req, res) => {
 
 App.post("/api/new", (req, res) => {
   console.log(JSON.stringify(req.body, null, 2));
+  const newData = req.body.newOrder;
+  db.query(
+    `
+    SELECT id FROM users WHERE email = $1
+    `,
+    [req.cookies.email]
+  ).then(userID => {
+    const login_user_id = userID.rows[0].id;
+    console.log(login_user_id);
+  });
   db.query(
     `
     INSERT INTO 
@@ -103,29 +112,29 @@ App.post("/api/new", (req, res) => {
     RETURNING id;
     `,
     [
-      req.body.newOrder.customer_name,
-      0,
-      req.body.newOrder.address,
-      req.body.newOrder.order_status,
-      req.body.newOrder.note,
+      newData.customer_name,
+      newData.phone_number,
+      newData.address,
+      newData.order_status,
+      newData.note,
       1
     ]
   )
     .then(data => {
-      for (let item of Object.keys(req.body.newOrder.items)) {
-        if (req.body.newOrder.items[item].description) {
-          console.log(req.body.newOrder.items[item]);
+      for (let item of Object.keys(newData.items)) {
+        if (newData.items[item].description) {
+          console.log(newData.items[item]);
           db.query(
             `
             INSERT INTO items (description, price, quantity, sub_total, order_id)
             VALUES ($1, $2, $3, $4, $5)
             `,
             [
-              req.body.newOrder.items[item].description,
-              Number(req.body.newOrder.items[item].price),
-              Number(req.body.newOrder.items[item].quantity),
-              Number(req.body.newOrder.items[item].price) *
-                Number(req.body.newOrder.items[item].quantity),
+              newData.items[item].description,
+              Number(newData.items[item].price),
+              Number(newData.items[item].quantity),
+              Number(newData.items[item].price) *
+                Number(newData.items[item].quantity),
               data.rows[0].id
             ]
           );
