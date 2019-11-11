@@ -100,49 +100,47 @@ App.post("/api/new", (req, res) => {
     SELECT id FROM users WHERE email = $1
     `,
     [req.cookies.email]
-  ).then(userID => {
-    const login_user_id = userID.rows[0].id;
-    console.log(login_user_id);
-  });
-  db.query(
-    `
+  )
+    .then(userID => {
+      const login_user_id = userID.rows[0].id;
+      db.query(
+        `
     INSERT INTO 
     orders (customer_name, phone_number, address, order_status, note, user_id)
     VALUES ($1, $2, $3, $4, $5, $6)
     RETURNING id;
     `,
-    [
-      newData.customer_name,
-      newData.phone_number,
-      newData.address,
-      newData.order_status,
-      newData.note,
-      1
-    ]
-  )
-    .then(data => {
-      for (let item of Object.keys(newData.items)) {
-        if (newData.items[item].description) {
-          console.log(newData.items[item]);
-          db.query(
-            `
+        [
+          newData.customer_name,
+          newData.phone_number,
+          newData.address,
+          newData.order_status,
+          newData.note,
+          login_user_id
+        ]
+      ).then(data => {
+        for (let item of Object.keys(newData.items)) {
+          if (newData.items[item].description) {
+            console.log(newData.items[item]);
+            db.query(
+              `
             INSERT INTO items (description, price, quantity, sub_total, order_id)
             VALUES ($1, $2, $3, $4, $5)
             `,
-            [
-              newData.items[item].description,
-              Number(newData.items[item].price),
-              Number(newData.items[item].quantity),
-              Number(newData.items[item].price) *
+              [
+                newData.items[item].description,
+                Number(newData.items[item].price),
                 Number(newData.items[item].quantity),
-              data.rows[0].id
-            ]
-          );
+                Number(newData.items[item].price) *
+                  Number(newData.items[item].quantity),
+                data.rows[0].id
+              ]
+            );
+          }
         }
-      }
-      res.redirect("/");
+        res.redirect("/");
+      });
     })
-
     .catch(err => console.log(err));
 });
 
@@ -166,6 +164,7 @@ App.post("/api/delete/:id", (req, res) => {
 
 App.post("/api/edit", (req, res) => {
   console.log(JSON.stringify(req.body, null, 2));
+  const editData = req.body.editOrder;
   db.query(
     `
     UPDATE orders
@@ -174,45 +173,45 @@ App.post("/api/edit", (req, res) => {
     WHERE id = $6;
     `,
     [
-      req.body.editOrder.customer_name,
-      req.body.editOrder.phone_number,
-      req.body.editOrder.address,
-      req.body.editOrder.order_status,
-      req.body.editOrder.note,
-      req.body.editOrder.order_id
+      editData.customer_name,
+      editData.phone_number,
+      editData.address,
+      editData.order_status,
+      editData.note,
+      editData.order_id
     ]
   )
     .then(data1 => {
-      for (let item of Object.keys(req.body.editOrder.items)) {
-        if (req.body.editOrder.items[item].id) {
+      for (let item of Object.keys(editData.items)) {
+        if (editData.items[item].id) {
           db.query(
             `
-                  UPDATE items 
-                  SET description = $1, price = $2, quantity = $3, sub_total = $4
-                  WHERE id = $5;
-                  `,
+            UPDATE items 
+            SET description = $1, price = $2, quantity = $3, sub_total = $4
+            WHERE id = $5;
+            `,
             [
-              req.body.editOrder.items[item].description,
-              Number(req.body.editOrder.items[item].price),
-              Number(req.body.editOrder.items[item].quantity),
-              Number(req.body.editOrder.items[item].price) *
-                Number(req.body.editOrder.items[item].quantity),
-              req.body.editOrder.items[item].id
+              editData.items[item].description,
+              Number(editData.items[item].price),
+              Number(editData.items[item].quantity),
+              Number(editData.items[item].price) *
+                Number(editData.items[item].quantity),
+              editData.items[item].id
             ]
           );
-        } else if (req.body.editOrder.items[item].description) {
+        } else if (editData.items[item].description) {
           db.query(
             `
-                  INSERT INTO items (description, price, quantity, sub_total, order_id)
-                  VALUES ($1, $2, $3, $4, $5)
-                  `,
+            INSERT INTO items (description, price, quantity, sub_total, order_id)
+            VALUES ($1, $2, $3, $4, $5)
+            `,
             [
-              req.body.editOrder.items[item].description,
-              Number(req.body.editOrder.items[item].price),
-              Number(req.body.editOrder.items[item].quantity),
-              Number(req.body.editOrder.items[item].price) *
-                Number(req.body.editOrder.items[item].quantity),
-              req.body.editOrder.order_id
+              editData.items[item].description,
+              Number(editData.items[item].price),
+              Number(editData.items[item].quantity),
+              Number(editData.items[item].price) *
+                Number(editData.items[item].quantity),
+              editData.order_id
             ]
           );
         }
