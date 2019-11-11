@@ -59,17 +59,36 @@ App.get("/api/userCheck", (req, res) => {
 
 App.get("/api/data", (req, res) => {
   console.log(req.cookies);
-
   db.query(
     `
-    SELECT * 
-    FROM orders WHERE user_id = $1
+    SELECT id FROM users WHERE email = $1
     `,
-    [1]
+    [req.cookies.email]
   )
-    .then(data1 => {
-      db.query(`SELECT * FROM items`).then(data2 => {
-        res.json({ orders: data1, items: data2 });
+    .then(userID => {
+      // const login_user_id = userID.rows.id;
+      const login_user_id = 1;
+      db.query(
+        `
+        SELECT * FROM orders WHERE user_id = $1
+        `,
+        [login_user_id]
+      ).then(data1 => {
+        console.log(data1.rows);
+        let order_ids = "";
+        data1.rows.map(order => {
+          order_ids += order.id + ",";
+        });
+        order_ids = "1, 2, 3";
+        console.log(order_ids);
+        db.query(
+          `
+          SELECT * FROM items WHERE order_id IN (1, 2, 3)
+          `
+          // [order_ids]
+        ).then(data2 => {
+          res.json({ orders: data1, items: data2 });
+        });
       });
     })
     .catch(err => console.log(err));
