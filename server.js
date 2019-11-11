@@ -28,6 +28,7 @@ App.use(cookieParser());
 App.use(Express.static("public"));
 
 App.get("/api/userCheck", (req, res) => {
+  console.log(req.cookies);
   if (req.cookies.email) {
     db.query(
       `SELECT id
@@ -35,20 +36,20 @@ App.get("/api/userCheck", (req, res) => {
     `,
       [req.cookies.email]
     ).then(id => {
-      if (id.rows) {
-        console.log("login user id:" + JSON.stringify(id.rows));
+      if (id.rows[0]) {
+        console.log("login user id:" + JSON.stringify(id.rows[0]));
         res.json(id.rows[0]);
       } else {
         db.query(
           `
         INSERT INTO 
-        users (email, settings)
+        users (email, setting)
         VALUES ($1, $2)
         RETURNING id;
         `,
           [req.cookies.email, ""]
         ).then(data => {
-          console.log("create user id:" + JSON.stringify(data.rows));
+          console.log("create user id:" + JSON.stringify(data.rows[0]));
           res.json(data.rows[0]);
         });
       }
