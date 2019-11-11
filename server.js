@@ -27,16 +27,38 @@ App.use(BodyParser.json());
 App.use(cookieParser());
 App.use(Express.static("public"));
 
-App.get("/api/data", (req, res) => {
-  console.log(req.cookies);
-  db.query(
-    `SELECT id
+App.get("/api/userCheck", (req, res) => {
+  if (req.cookies.email) {
+    db.query(
+      `SELECT id
     FROM users WHERE email = $1
     `,
-    [req.cookies.email]
-  ).then(id => {
-    console.log("login user id:" + json(id));
-  });
+      [req.cookies.email]
+    ).then(id => {
+      if (id.rows) {
+        console.log("login user id:" + JSON.stringify(id.rows));
+        res.json(id.rows[0]);
+      } else {
+        db.query(
+          `
+        INSERT INTO 
+        users (email, settings)
+        VALUES ($1, $2)
+        RETURNING id;
+        `,
+          [req.cookies.email, ""]
+        ).then(data => {
+          console.log("create user id:" + JSON.stringify(data.rows));
+          res.json(data.rows[0]);
+        });
+      }
+    });
+  }
+});
+
+App.get("/api/data", (req, res) => {
+  console.log(req.cookies);
+
   db.query(
     `
     SELECT * 
