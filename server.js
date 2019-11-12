@@ -6,6 +6,7 @@ const morgan = require("morgan");
 const PORT = process.env.PORT || 8080;
 const { Pool } = require("pg");
 require("dotenv").config();
+const cors = require("cors");
 const dbParams = require("./db_config");
 
 // routers
@@ -32,6 +33,7 @@ App.use(BodyParser.urlencoded({ extended: false }));
 App.use(BodyParser.json());
 App.use(cookieParser());
 App.use(Express.static("public"));
+App.use(cors());
 
 App.use("/api", userCheck(db));
 App.use("/api", userData(db));
