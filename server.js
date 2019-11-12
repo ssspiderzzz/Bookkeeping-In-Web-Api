@@ -1,13 +1,14 @@
 const Express = require("express");
 const App = Express();
-const bcrypt = require("bcrypt");
 const BodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const morgan = require("morgan");
-const PORT = 8080;
+const PORT = process.env.PORT || 8080;
 const { Pool } = require("pg");
 require("dotenv").config();
 const dbParams = require("./db_config");
+
+const userCheck = require("./routes/userCheck");
 
 const db = new Pool(dbParams);
 
@@ -27,36 +28,38 @@ App.use(BodyParser.json());
 App.use(cookieParser());
 App.use(Express.static("public"));
 
-App.get("/api/userCheck", (req, res) => {
-  if (req.cookies.email) {
-    db.query(
-      `SELECT id
-      FROM users WHERE email = $1
-      `,
-      [req.cookies.email]
-    ).then(id => {
-      if (id.rows[0]) {
-        console.log("login user id:" + JSON.stringify(id.rows[0]));
-        res.json(id.rows[0]);
-      } else {
-        db.query(
-          `
-        INSERT INTO 
-        users (email, setting)
-        VALUES ($1, $2)
-        RETURNING id;
-        `,
-          [req.cookies.email, ""]
-        ).then(data => {
-          console.log("create user id:" + JSON.stringify(data.rows[0]));
-          res.json(data.rows[0]);
-        });
-      }
-    });
-  } else {
-    res.json({});
-  }
-});
+App.use("/api", userCheck(db));
+
+// App.get("/api/userCheck", (req, res) => {
+//   if (req.cookies.email) {
+//     db.query(
+//       `SELECT id
+//       FROM users WHERE email = $1
+//       `,
+//       [req.cookies.email]
+//     ).then(id => {
+//       if (id.rows[0]) {
+//         console.log("login user id:" + JSON.stringify(id.rows[0]));
+//         res.json(id.rows[0]);
+//       } else {
+//         db.query(
+//           `
+//         INSERT INTO
+//         users (email, setting)
+//         VALUES ($1, $2)
+//         RETURNING id;
+//         `,
+//           [req.cookies.email, ""]
+//         ).then(data => {
+//           console.log("create user id:" + JSON.stringify(data.rows[0]));
+//           res.json(data.rows[0]);
+//         });
+//       }
+//     });
+//   } else {
+//     res.json({});
+//   }
+// });
 
 App.get("/api/data", (req, res) => {
   console.log(req.cookies);
