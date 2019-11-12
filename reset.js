@@ -39,7 +39,7 @@ Promise.resolve(read(path.resolve(__dirname, `db/schema.sql`)))
       INSERT INTO users (email, setting) 
       VALUES ($1, $2)
       `,
-        ["guest-login", "none"]
+        ["New-guest", "none"]
       ).then(() => {
         console.log(`Create guest user!`);
         db.end();
