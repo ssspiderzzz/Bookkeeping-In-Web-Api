@@ -34,9 +34,7 @@ App.use(BodyParser.json());
 App.use(cookieParser());
 App.use(Express.static("public"));
 const corsOptions = {
-  origin: [
-    "https://5dca5d7d270ae5000a65ef93--amazing-dubinsky-a6a649.netlify.com/"
-  ],
+  origin: ["https://amazing-dubinsky-a6a649.netlify.com/"],
   credentials: true,
   allowedHeaders: [
     "Content-Type",
