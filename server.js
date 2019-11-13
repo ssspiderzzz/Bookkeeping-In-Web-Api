@@ -35,26 +35,9 @@ App.use(cookieParser());
 App.use(Express.static("public"));
 const corsOptions = {
   origin: ["https://amazing-dubinsky-a6a649.netlify.com/"],
-  credentials: true,
-  allowedHeaders: [
-    "Content-Type",
-    "Authorization",
-    "X-Requested-With",
-    "X-Forwarded-Proto",
-    "Cookie",
-    "Set-Cookie"
-  ],
-  exposedHeaders: [
-    "Content-Type",
-    "Authorization",
-    "X-Requested-With",
-    "X-Forwarded-Proto",
-    "Cookie",
-    "Set-Cookie"
-  ]
+  credentials: true
 };
 App.use(cors(corsOptions));
-App.set("trust proxy", 1);
 
 App.use("/api", userCheck(db));
 App.use("/api", userData(db));
