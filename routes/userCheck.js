@@ -2,8 +2,7 @@ const router = require("express").Router();
 
 module.exports = function userCheck(db) {
   router.get("/userCheck", (req, res) => {
-    console.log(req);
-    console.log(req.cookies);
+    console.log(JSON.stringify(req.cookies, null, 2));
     console.log(`email: ${req.cookies.email}`);
     if (req.cookies.email) {
       db.query(
