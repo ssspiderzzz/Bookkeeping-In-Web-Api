@@ -28,12 +28,12 @@ db.connect((error, client) => {
 });
 
 // Express Configuration
+App.use(cors());
 App.use(morgan("dev"));
 App.use(BodyParser.urlencoded({ extended: false }));
 App.use(BodyParser.json());
 App.use(cookieParser());
 App.use(Express.static("public"));
-App.use(cors());
 
 App.use("/api", userCheck(db));
 App.use("/api", userData(db));
