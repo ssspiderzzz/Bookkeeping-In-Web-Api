@@ -33,7 +33,12 @@ App.use(BodyParser.urlencoded({ extended: false }));
 App.use(BodyParser.json());
 App.use(cookieParser());
 App.use(Express.static("public"));
-App.use(cors());
+const corsOptions = {
+  origin:
+    "https://5dca5d7d270ae5000a65ef93--amazing-dubinsky-a6a649.netlify.com/",
+  credentials: true
+};
+App.use(cors(corsOptions));
 
 App.use("/api", userCheck(db));
 App.use("/api", userData(db));
