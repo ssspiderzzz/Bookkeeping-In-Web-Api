@@ -28,12 +28,16 @@ db.connect((error, client) => {
 });
 
 // Express Configuration
-App.use(cors());
 App.use(morgan("dev"));
 App.use(BodyParser.urlencoded({ extended: false }));
 App.use(BodyParser.json());
 App.use(cookieParser());
 App.use(Express.static("public"));
+const corsOptions = {
+  origin: ["https://amazing-dubinsky-a6a649.netlify.com/"],
+  credentials: true
+};
+App.use(cors(corsOptions));
 
 App.use("/api", userCheck(db));
 App.use("/api", userData(db));
