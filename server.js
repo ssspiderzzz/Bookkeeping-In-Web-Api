@@ -54,6 +54,7 @@ const corsOptions = {
   ]
 };
 App.use(cors(corsOptions));
+App.set("trust proxy", 1);
 
 App.use("/api", userCheck(db));
 App.use("/api", userData(db));
