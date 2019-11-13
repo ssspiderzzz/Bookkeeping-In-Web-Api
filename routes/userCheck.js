@@ -11,7 +11,7 @@ module.exports = function userCheck(db) {
         `,
         [req.cookies.email]
       ).then(id => {
-        console.log("login user id:" + JSON.stringify(id.rows[0]));
+        console.log("login user id:" + id.rows[0]);
         if (id.rows[0]) {
           res.json(id.rows[0]);
         } else {
@@ -24,7 +24,7 @@ module.exports = function userCheck(db) {
           `,
             [req.cookies.email, ""]
           ).then(data => {
-            console.log("create user id:" + JSON.stringify(data.rows[0]));
+            console.log("create user id:" + data.rows[0]);
             res.json(data.rows[0]);
           });
         }
