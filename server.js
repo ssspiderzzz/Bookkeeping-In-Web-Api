@@ -34,9 +34,26 @@ App.use(BodyParser.json());
 App.use(cookieParser());
 App.use(Express.static("public"));
 const corsOptions = {
-  origin:
-    "https://5dca5d7d270ae5000a65ef93--amazing-dubinsky-a6a649.netlify.com/",
-  credentials: true
+  origin: [
+    "https://5dca5d7d270ae5000a65ef93--amazing-dubinsky-a6a649.netlify.com/"
+  ],
+  credentials: true,
+  allowedHeaders: [
+    "Content-Type",
+    "Authorization",
+    "X-Requested-With",
+    "X-Forwarded-Proto",
+    "Cookie",
+    "Set-Cookie"
+  ],
+  exposedHeaders: [
+    "Content-Type",
+    "Authorization",
+    "X-Requested-With",
+    "X-Forwarded-Proto",
+    "Cookie",
+    "Set-Cookie"
+  ]
 };
 App.use(cors(corsOptions));
 
