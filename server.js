@@ -30,11 +30,12 @@ db.connect((error, client) => {
 });
 
 // Express Configuration
-App.use(
-  cors({
-    credentials: true
-  })
-);
+var corsOptions = {
+  origin: true,
+  credentials: true,
+  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+};
+App.use(cors(corsOptions));
 App.use(helmet());
 App.use(morgan("dev"));
 App.use(BodyParser.urlencoded({ extended: false }));
