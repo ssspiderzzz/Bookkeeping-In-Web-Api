@@ -33,18 +33,18 @@ db.connect((error, client) => {
 var corsOptions = {
   origin: true,
   credentials: true,
-  allowedHeaders: ["sessionId", "Content-Type"],
-  exposedHeaders: ["sessionId"],
+  allowedHeaders: ["session", "cookies", "Content-Type"],
+  exposedHeaders: ["session", "cookies"],
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 };
-App.use(cors(corsOptions));
 App.use(helmet());
 App.use(morgan("dev"));
 App.use(BodyParser.urlencoded({ extended: false }));
 App.use(BodyParser.json());
 App.use(cookieParser());
 App.use(cookieSession({ name: "session", keys: ["key1", "key2"] }));
+App.use(cors(corsOptions));
 App.use(Express.static("public"));
 
 App.use("/api", userCheck(db));
