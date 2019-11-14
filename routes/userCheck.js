@@ -7,7 +7,7 @@ var corsOptions = {
 
 module.exports = function userCheck(db) {
   router.get("/userCheck", cors(corsOptions), (req, res) => {
-    console.log(JSON.stringify(req, null, 2));
+    console.log(JSON.stringify(req.session, null, 2));
     console.log(JSON.stringify(req.cookies, null, 2));
 
     console.log(`email: ${req.cookies.email}`);
