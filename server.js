@@ -8,6 +8,7 @@ const { Pool } = require("pg");
 require("dotenv").config();
 const cors = require("cors");
 const helmet = require("helmet");
+const cookieSession = require("cookie-session");
 const dbParams = require("./db_config");
 
 // routers
@@ -35,6 +36,7 @@ App.use(morgan("dev"));
 App.use(BodyParser.urlencoded({ extended: false }));
 App.use(BodyParser.json());
 App.use(cookieParser());
+App.use(cookieSession({ name: "session", keys: ["key1", "key2"] }));
 App.use(Express.static("public"));
 
 App.use("/api", userCheck(db));
