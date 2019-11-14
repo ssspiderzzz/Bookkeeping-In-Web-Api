@@ -30,7 +30,11 @@ db.connect((error, client) => {
 });
 
 // Express Configuration
-App.use(cors());
+App.use(
+  cors({
+    credentials: true
+  })
+);
 App.use(helmet());
 App.use(morgan("dev"));
 App.use(BodyParser.urlencoded({ extended: false }));
