@@ -33,6 +33,9 @@ db.connect((error, client) => {
 var corsOptions = {
   origin: true,
   credentials: true,
+  allowedHeaders: ["sessionId", "Content-Type"],
+  exposedHeaders: ["sessionId"],
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 };
 App.use(cors(corsOptions));
