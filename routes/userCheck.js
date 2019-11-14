@@ -1,12 +1,8 @@
 const router = require("express").Router();
 const cors = require("cors");
-var corsOptions = {
-  origin: "https://amazing-dubinsky-a6a649.netlify.com",
-  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
-};
 
 module.exports = function userCheck(db) {
-  router.get("/userCheck", cors(corsOptions), (req, res) => {
+  router.get("/userCheck", (req, res) => {
     console.log(JSON.stringify(req.session, null, 2));
     console.log(JSON.stringify(req.cookies, null, 2));
 
