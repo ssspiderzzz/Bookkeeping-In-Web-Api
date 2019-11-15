@@ -33,8 +33,8 @@ db.connect((error, client) => {
 var corsOptions = {
   origin: true,
   credentials: true,
-  allowedHeaders: ["cookie", "Content-Type"],
-  exposedHeaders: ["cookie"],
+  allowedHeaders: ["Set-Cookie", "cookie", "Content-Type"],
+  exposedHeaders: ["Set-Cookie", "cookie"],
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 };
