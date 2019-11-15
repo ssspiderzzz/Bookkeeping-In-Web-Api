@@ -8,7 +8,7 @@ module.exports = function create(db) {
       `
       SELECT id FROM users WHERE email = $1
       `,
-      [req.cookies.email]
+      [newData.email]
     )
       .then(userID => {
         const login_user_id = userID.rows[0].id;

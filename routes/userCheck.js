@@ -1,19 +1,19 @@
 const router = require("express").Router();
 
 module.exports = function userCheck(db) {
-  router.get("/userCheck", (req, res) => {
-    console.log(req);
-    console.log(JSON.stringify(req.cookies, null, 2));
-    console.log(req.body.email);
-    console.log(`email: ${req.cookies.email}`);
-    if (req.cookies.email) {
+  router.post("/userCheck", (req, res) => {
+    console.log(`email sent form post: ${req.body.email}`);
+    console.log(`email form cookie: ${req.cookies.email}`);
+    const user_email = req.cookies.email || req.body.email;
+    if (user_email) {
       db.query(
         `SELECT id
         FROM users WHERE email = $1
         `,
-        [req.cookies.email]
+        [user_email]
       ).then(id => {
-        console.log("login user id:" + id.rows[0]);
+        console.log(`check id.rows[0]:`);
+        console.log(id.rows[0]);
         if (id.rows[0]) {
           res.json(id.rows[0]);
         } else {
@@ -24,7 +24,7 @@ module.exports = function userCheck(db) {
           VALUES ($1, $2)
           RETURNING id;
           `,
-            [req.cookies.email, ""]
+            [user_email, ""]
           ).then(data => {
             console.log("create user id:" + data.rows[0]);
             res.json(data.rows[0]);
