@@ -47,7 +47,7 @@ module.exports = function create(db) {
               );
             }
           }
-          res.redirect("/");
+          res.json("Create Succeed!");
         });
       })
       .catch(err => console.log(err));
