@@ -1,5 +1,4 @@
 const router = require("express").Router();
-const cors = require("cors");
 
 module.exports = function userCheck(db) {
   router.get("/userCheck", (req, res) => {

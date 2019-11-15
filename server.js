@@ -8,7 +8,6 @@ const { Pool } = require("pg");
 require("dotenv").config();
 const cors = require("cors");
 const helmet = require("helmet");
-const cookieSession = require("cookie-session");
 const dbParams = require("./db_config");
 
 // routers
@@ -34,7 +33,7 @@ var corsOptions = {
   origin: true,
   credentials: true,
   allowedHeaders: ["X-PINGOTHER", "X-Requested-With", "Content-Type", "Accept"],
-  methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
+  methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE", "OPTIONS"],
   optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 };
 App.use(helmet());
@@ -42,7 +41,6 @@ App.use(morgan("dev"));
 App.use(BodyParser.urlencoded({ extended: false }));
 App.use(BodyParser.json());
 App.use(cookieParser());
-App.use(cookieSession({ name: "session", keys: ["key1", "key2"] }));
 App.use(cors(corsOptions));
 App.use(Express.static("public"));
 
