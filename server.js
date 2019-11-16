@@ -7,6 +7,7 @@ const PORT = process.env.PORT || 8080;
 const { Pool } = require("pg");
 require("dotenv").config();
 const cors = require("cors");
+const helmet = require("helmet");
 const dbParams = require("./db_config");
 
 // routers
@@ -28,12 +29,27 @@ db.connect((error, client) => {
 });
 
 // Express Configuration
+var corsOptions = {
+  origin: true,
+  credentials: true,
+  allowedHeaders: [
+    "X-PINGOTHER",
+    "X-Requested-With",
+    "Content-Type",
+    "Accept",
+    "cookie",
+    "Set-Cookie"
+  ],
+  methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE", "OPTIONS"],
+  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+};
+App.use(helmet());
 App.use(morgan("dev"));
 App.use(BodyParser.urlencoded({ extended: false }));
 App.use(BodyParser.json());
 App.use(cookieParser());
+App.use(cors(corsOptions));
 App.use(Express.static("public"));
-App.use(cors());
 
 App.use("/api", userCheck(db));
 App.use("/api", userData(db));
