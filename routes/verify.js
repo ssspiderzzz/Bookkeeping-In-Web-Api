@@ -5,7 +5,6 @@ const CLIENT_ID =
 
 module.exports = function verify(db) {
   router.post("/verify", (req, res) => {
-    console.log(req.headers);
     const id_token = req.body.id_token;
     const client = new OAuth2Client(CLIENT_ID);
     async function verify() {
@@ -15,12 +14,21 @@ module.exports = function verify(db) {
       });
       const payload = ticket.getPayload();
       const userid = payload["sub"];
-      console.log(payload);
-      console.log(userid);
+      const username = payload["given_name"];
+      const useremail = payload["email"];
+      db.query(
+        `
+        INSERT INTO users (id, username, email)
+        VALUES ($1, $2, $3) ON CONFLICT (id)
+        DO NOTHING
+        RETURNING id
+        `,
+        [userid, username, useremail]
+      ).then(data => {
+        res.json(data.rows[0]);
+      });
     }
-    verify()
-      .then(res.json({}))
-      .catch(console.error);
+    verify().catch(console.error);
   });
 
   return router;

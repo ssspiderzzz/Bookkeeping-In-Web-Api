@@ -36,10 +36,10 @@ Promise.resolve(read(path.resolve(__dirname, `db/schema.sql`)))
       console.log(`Database has been reset successfully!`);
       db.query(
         `
-      INSERT INTO users (email, setting) 
-      VALUES ($1, $2)
+      INSERT INTO users (id, username, email) 
+      VALUES ($1, $2, $3)
       `,
-        ["New-guest", "none"]
+        ["1", "Guest", "New-guest"]
       ).then(() => {
         console.log(`Create guest user!`);
         db.end();
