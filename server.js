@@ -16,6 +16,7 @@ const userData = require("./routes/userData");
 const create = require("./routes/create");
 const remove = require("./routes/remove");
 const edit = require("./routes/edit");
+const verify = require("./routes/verify");
 
 // connect database
 const db = new Pool(dbParams);
@@ -56,6 +57,8 @@ App.use("/api", userData(db));
 App.use("/api", create(db));
 App.use("/api", remove(db));
 App.use("/api", edit(db));
+
+App.use("/api", verify(db));
 
 App.listen(PORT, () => {
   console.log(
