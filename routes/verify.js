@@ -25,7 +25,9 @@ module.exports = function verify(db) {
         `,
         [userid, username, useremail]
       ).then(data => {
-        res.json(data.rows[0]);
+        if (data.rows[0]) console.log(`New user created!`);
+        console.log(`userid:`, userid);
+        res.json(userid);
       });
     }
     verify().catch(console.error);

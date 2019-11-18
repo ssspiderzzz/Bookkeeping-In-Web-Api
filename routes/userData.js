@@ -7,8 +7,8 @@ module.exports = function userData(db) {
       const login_user_id = req.body.id;
       db.query(
         `
-            SELECT * FROM orders WHERE user_id = $1
-            `,
+        SELECT * FROM orders WHERE user_id = $1
+        `,
         [login_user_id]
       ).then(data1 => {
         let order_ids = [];
